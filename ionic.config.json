@@ -1,0 +1,7 @@
+{
+  "name": "solidApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
