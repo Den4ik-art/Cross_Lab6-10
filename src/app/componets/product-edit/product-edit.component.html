@@ -1,0 +1,108 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Редагування товару</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+
+      <ion-item>
+        <ion-input
+          label="Назва"
+          labelPlacement="floating"
+          errorText="Мінімум 3 символи"
+          class="custom"
+          formControlName="name">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input
+          label="Ціна"
+          type="number"
+          labelPlacement="floating"
+          errorText="Ціна > 0"
+          class="custom"
+          formControlName="price">
+        </ion-input>
+      </ion-item>
+
+      <!-- Outerwear -->
+      <fieldset *ngIf="productForm.get('type')?.value === 'Outerwear'">
+        <ion-item>
+          <ion-input
+            label="Розмір"
+            labelPlacement="floating"
+            formControlName="size"
+            class="custom">
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Матеріал"
+            labelPlacement="floating"
+            formControlName="material"
+            class="custom">
+          </ion-input>
+        </ion-item>
+      </fieldset>
+
+      <!-- Shoes -->
+      <fieldset *ngIf="productForm.get('type')?.value === 'Shoes'">
+        <ion-item>
+          <ion-input
+            label="Розмір"
+            type="number"
+            labelPlacement="floating"
+            formControlName="size"
+            class="custom">
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Колір"
+            labelPlacement="floating"
+            formControlName="color"
+            class="custom">
+          </ion-input>
+        </ion-item>
+      </fieldset>
+
+      <!-- Accessory -->
+      <fieldset *ngIf="productForm.get('type')?.value === 'Accessory'">
+        <ion-item>
+          <ion-input
+            label="Тип аксесуару"
+            labelPlacement="floating"
+            formControlName="accessoryType"
+            class="custom">
+          </ion-input>
+        </ion-item>
+      </fieldset>
+
+      <!-- Sportswear -->
+      <fieldset *ngIf="productForm.get('type')?.value === 'Sportswear'">
+        <ion-item>
+          <ion-input
+            label="Розмір"
+            labelPlacement="floating"
+            formControlName="size"
+            class="custom">
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Тип спорту"
+            labelPlacement="floating"
+            formControlName="sportType"
+            class="custom">
+          </ion-input>
+        </ion-item>
+      </fieldset>
+
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button type="submit" class="custom-pack-button">
+    Зберегти зміни
+  </ion-button>
+</form>

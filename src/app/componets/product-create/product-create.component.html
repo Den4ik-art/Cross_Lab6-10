@@ -1,0 +1,64 @@
+<ion-content class="ion-padding">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
+    <ion-item>
+      <ion-label position="floating">Назва товару</ion-label>
+      <ion-input formControlName="name" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Ціна товару</ion-label>
+      <ion-input formControlName="price" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Тип товару</ion-label>
+      <ion-select formControlName="type" (ionChange)="onTypeChange($event.detail.value)">
+        <ion-select-option *ngFor="let t of types" [value]="t.value">{{ t.label }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div *ngIf="currentType === 'Outerwear'">
+      <ion-item>
+        <ion-label position="floating">Розмір</ion-label>
+        <ion-input formControlName="size" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Матеріал</ion-label>
+        <ion-input formControlName="material" type="text"></ion-input>
+      </ion-item>
+    </div>
+
+    <div *ngIf="currentType === 'Shoes'">
+      <ion-item>
+        <ion-label position="floating">Розмір (EU)</ion-label>
+        <ion-input formControlName="size" type="number"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Колір</ion-label>
+        <ion-input formControlName="color" type="text"></ion-input>
+      </ion-item>
+    </div>
+
+    <div *ngIf="currentType === 'Accessory'">
+      <ion-item>
+        <ion-label position="floating">Тип аксесуара</ion-label>
+        <ion-input formControlName="accessoryType" type="text"></ion-input>
+      </ion-item>
+    </div>
+
+    <div *ngIf="currentType === 'Sportswear'">
+      <ion-item>
+        <ion-label position="floating">Розмір</ion-label>
+        <ion-input formControlName="size" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Тип спорту</ion-label>
+        <ion-input formControlName="sportType" type="text"></ion-input>
+      </ion-item>
+    </div>
+
+    <ion-button expand="full" color="medium" (click)="cancel()">Скасувати</ion-button>
+    <ion-button expand="full" type="submit" [disabled]="!productForm.valid">Додати товар</ion-button>
+  </form>
+</ion-content>
