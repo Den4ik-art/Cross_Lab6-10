@@ -87,6 +87,11 @@ export class ProductService {
         return [...this.products];
     }
 
+    // Отримати продукти за типом
+    getProductsByType(type: ProductType): IProduct[] {
+        return this.products.filter((product) => product.getType() === type);
+    }
+
     // Отримати один продукт
     getProductById(id: number): IProduct | undefined {
         return this.products.find((p) => p.getID() === id);

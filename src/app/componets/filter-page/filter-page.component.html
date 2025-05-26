@@ -1,0 +1,22 @@
+<div class="filter-container">
+  <ion-item lines="none">
+    <ion-label>Категорії:</ion-label>
+  </ion-item>
+
+  <ion-item lines="none" *ngFor="let type of allTypes">
+    <ion-checkbox [(ngModel)]="selectedTypes[type]">{{ type }}</ion-checkbox>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Макс. ціна (грн):</ion-label>
+    <ion-input type="number" [(ngModel)]="maxPrice"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Ключове слово:</ion-label>
+    <ion-input [(ngModel)]="keyword"></ion-input>
+  </ion-item>
+
+  <!-- Викликаємо triggerFilter замість applyFilter -->
+  <ion-button expand="block" class="filter-button" (click)="triggerFilter()">Застосувати фільтр</ion-button>
+</div>

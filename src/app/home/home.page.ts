@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { IProduct } from '../classes/interface/IProduct';
 import { ModalController } from '@ionic/angular';
@@ -20,6 +20,10 @@ import {
 } from '@ionic/angular/standalone';
 import { MyHeaderComponentComponent } from '../my-header-component/my-header-component.component';
 import { CommonModule } from '@angular/common';
+import { FilterPageComponent } from '../componets/filter-page/filter-page.component';
+import { ConfigService } from '../services/config.service';
+import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -42,23 +46,37 @@ import { CommonModule } from '@angular/common';
     ProductCreateComponent,
     ProductEditComponent,
     MyHeaderComponentComponent,
-    CommonModule
+    CommonModule,
+    FilterPageComponent,
+    FormsModule
   ]
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   products: IProduct[] = [];
   loading: boolean = true;
+  filteredProducts: IProduct[] = [];
+  filtered: boolean = false;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private productReadService: ProductService,
+    private configService: ConfigService,
     private modalController: ModalController
   ) {}
 
   ngOnInit() {
-    this.productReadService.load().subscribe(
+    this.products = this.productReadService.getProductsByType(this.configService.currentType);
+    this.filteredProducts = this.products;
+
+    const sub = this.configService.type$.subscribe(type => {
+      this.products = this.productReadService.getProductsByType(type);
+    });
+    this.subscriptions.push(sub);
+
+    const loadSub = this.productReadService.load().subscribe(
       (data: IProduct[]) => {
         console.log('Товари завантажено:', data);
-        this.products = data;
+        this.products = this.productReadService.getProductsByType(this.configService.currentType);
         this.loading = false;
       },
       (error) => {
@@ -66,13 +84,17 @@ export class HomePage implements OnInit {
         this.loading = false;
       }
     );
+    this.subscriptions.push(loadSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   handleClick(productId: number) {
     const selectedProduct = this.productReadService.getProductById(productId);
     if (selectedProduct) {
       console.log(`Придбано товар: ${selectedProduct.getName()}`);
-      // Тут можеш реалізувати кошик, список покупок тощо
     } else {
       console.error('Товар не знайдено');
     }
@@ -89,7 +111,8 @@ export class HomePage implements OnInit {
       const data = res.data;
       if (data) {
         console.log('Новий товар додано:', data);
-        this.products.push(data);
+        this.productReadService.addProduct(data);
+        this.products = this.productReadService.getProductsByType(this.configService.currentType);
       }
     });
   }
@@ -116,10 +139,20 @@ export class HomePage implements OnInit {
     if (updatedProduct) {
       const index = this.products.findIndex(p => p.getID() === updatedProduct.id);
       if (index !== -1) {
-        this.products[index] = updatedProduct;
+        this.productReadService.updateProduct(updatedProduct);
+        this.products = this.productReadService.getProductsByType(this.configService.currentType);
         console.log('Товар оновлено:', updatedProduct);
       }
     }
   }
 
+  onFilterProducts(filtered: IProduct[]) {
+    this.filtered = true;
+    this.filteredProducts = filtered;
+    console.log('Фільтровані товари:', this.filteredProducts);
+  }
+
+  get visibleProducts(): IProduct[] {
+    return this.filtered ? this.filteredProducts : this.products;
+  }
 }

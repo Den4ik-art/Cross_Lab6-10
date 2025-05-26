@@ -8,11 +8,14 @@
     Додати новий товар
   </ion-button>
 
+  <!-- Компонент фільтрації -->
+  <app-filter-page (filtered)="onFilterProducts($event)"></app-filter-page>
+
   <!-- Спінер, якщо товари ще завантажуються -->
   <div *ngIf="loading">Завантаження товарів...</div>
 
-  <!-- Відображення товарів у картках -->
-  <ion-card class="product-card" *ngFor="let product of products">
+  <!-- Якщо товари знайдено -->
+  <ion-card class="product-card" *ngFor="let product of visibleProducts">
     <ion-card-header class="card-header">
       <ion-card-title>
         {{ product.getName() }} №{{ product.getID() }}
@@ -29,14 +32,17 @@
       </ion-item>
     </ion-card-content>
 
-    <!-- Кнопка редагування -->
     <ion-button class="custom-button-click" (click)="openEditProductModal(product.getID())">
       Редагувати
     </ion-button>
 
-    <!-- Кнопка "придбати" -->
     <ion-button class="custom-pack-button" (click)="handleClick(product.getID())">
       Придбати
     </ion-button>
   </ion-card>
+
+  <!-- Повідомлення, якщо нічого не знайдено -->
+  <div *ngIf="!loading && filtered && visibleProducts.length === 0">
+    <ion-label class="no-results-label">Товарів не знайдено</ion-label>
+  </div>
 </ion-content>
